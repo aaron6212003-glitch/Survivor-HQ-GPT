@@ -33,7 +33,7 @@ export default function RootLayout({
               <span>•</span>
               <span>Real NFL leagues</span>
             </div>
-            <p>Survivor · Pick’em · Confidence</p>
+            <p>Survivor · Pick’em</p>
           </div>
         </footer>
         </AccountProvider>
