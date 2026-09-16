@@ -11,11 +11,11 @@ import EntryPicker from '@/components/EntryPicker';
 
 export default function LeaguePage(){
  const {id:rawId}=useParams();const id=String(rawId);const {session,loading,refresh}=useAccount();
- const [league,setLeague]=useState<any>(null);const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [message,setMessage]=useState('');const [tab,setTab]=useState('picks');const [entryId,setEntryId]=useState('');const [draft,setDraft]=useState<Record<string,any>>({});const [dirty,setDirty]=useState(false);const pending=useRef(false);const generation=useRef(0);
+ const [league,setLeague]=useState<any>(null);const [busy,setBusy]=useState(false);const [error,setError]=useState('');const [message,setMessage]=useState('');const [tab,setTab]=useState('');const [entryId,setEntryId]=useState('');const [draft,setDraft]=useState<Record<string,any>>({});const [dirty,setDirty]=useState(false);const pending=useRef(false);const generation=useRef(0);
  const mine=(league?.entries.filter((entry:any)=>league.managedEntryIds?.includes(entry.id)||entry.userId===league.me)||[]).sort((a:any,b:any)=>(a.entryNumber||Number(a.name.match(/\d+/)?.[0])||0)-(b.entryNumber||Number(b.name.match(/\d+/)?.[0])||0));
  const entry=mine.find((item:any)=>item.id===entryId);
  const survivor=league?.config.format==='survivor';
- function accept(data:any){setLeague(data.league);setDirty(false);}
+ function accept(data:any){setLeague(data.league);setTab(current=>current||(data.league.config.format==='survivor'?'grid':'picks'));setDirty(false);}
  async function act(action:string,input:any={}){
   if(pending.current)return;if(dirty&&!['savePicks','archive','view'].includes(action)&&!window.confirm('Discard your unsaved pick changes?'))return;
   pending.current=true;setBusy(true);setError('');setMessage('');const sequence=++generation.current;
