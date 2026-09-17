@@ -3,7 +3,7 @@
 export const field='sports-field mt-2 p-3';
 export const primary='sports-primary px-5 py-3';
 export const panel='sports-panel p-5 sm:p-6';
-export const defaults={name:'',format:'survivor',maxEntries:100,tiebreaker:'shared',tiesLose:true};
+export const defaults={name:'',format:'survivor',maxEntries:100,tiebreaker:'monday-total',tiesLose:true};
 
 export default function LeagueConfigFields({value,onChange,existing=false}:{value:any;onChange:(v:any)=>void;existing?:boolean}) {
  const set=(key:string,next:any)=>onChange({...value,[key]:next});
@@ -14,7 +14,7 @@ export default function LeagueConfigFields({value,onChange,existing=false}:{valu
   <div className="grid sm:grid-cols-2 gap-4">
    <label>Format<select className={field} value={value.format} disabled={existing} onChange={e=>setFormat(e.target.value)}><option value="survivor">Survivor</option><option value="pickem">Straight Pick’em</option></select></label>
    {survivor&&<label>Maximum lives per member<input className={field} type="number" min={1} max={100} required value={value.maxEntries} onChange={e=>set('maxEntries',Number(e.target.value))}/></label>}
-   {!survivor&&<label>Standings tiebreaker<select className={field} value={value.tiebreaker} onChange={e=>set('tiebreaker',e.target.value)}><option value="shared">Share the rank</option><option value="correct-picks">Most correct picks</option></select></label>}
+   {!survivor&&<div className="rounded-xl border border-sky-900 bg-sky-950/30 p-3 text-sm text-sky-100"><strong>Monday Night tiebreaker</strong><p className="mt-1">Each player predicts the total points in Monday night’s game. The closest prediction breaks a tied record.</p></div>}
   </div>
   <p className="rounded-xl border border-sky-900 bg-sky-950/30 p-3 text-sm text-sky-100">Picks lock one game at a time: a Thursday player can no longer pick the Thursday game after kickoff, while Sunday and Monday games remain open until their own kickoffs.</p>
   {survivor?<>
