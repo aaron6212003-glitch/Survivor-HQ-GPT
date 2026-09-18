@@ -11,11 +11,11 @@ export function integer(value,min,max,field) {
 export function settings(input) {
  if(!['survivor','pickem'].includes(input.format)) fail('Choose Survivor or Straight Pick’em.');
  const maxEntries=input.format==='survivor'?integer(input.maxEntries,1,100,'Maximum lives per member'):1;
- return {format:input.format,maxEntries,deadlineMode:'per-game',tiebreaker:input.format==='pickem'?'monday-total':'shared',tiesLose:input.format==='survivor' ? input.tiesLose!==false : true};
+ return {format:input.format,maxEntries,deadlineMode:input.format==='pickem'?'first-game':'per-game',tiebreaker:input.format==='pickem'?'monday-total':'shared',tiesLose:input.format==='survivor' ? input.tiesLose!==false : true};
 }
 export function normalizeLeagueConfig(league) {
  // Older leagues used a whole-week lock after Thursday. Every current league locks each game at its own kickoff.
- if(league?.config&&league.config.deadlineMode!=='per-game') league.config.deadlineMode='per-game';
+ if(league?.config) league.config.deadlineMode=league.config.format==='pickem'?'first-game':'per-game';
  return league;
 }
 export function createLeague(input,user,profile) {
@@ -50,7 +50,9 @@ export function weekDeadline(league,week,games) {
  const valid=liveGames(games).map(g=>Date.parse(g.kickoff)).filter(Number.isFinite);
  const custom=league.deadlines?.[week] ? Date.parse(league.deadlines[week]) : Infinity;
  // Every game locks at its own kickoff; ignore legacy whole-week deadlines.
- return Infinity;
+ if(league.config.format!=='pickem') return Infinity;
+ const firstKickoff=liveGames(games).map(game=>Date.parse(game.kickoff)).filter(Number.isFinite).sort((a,b)=>a-b)[0];
+ return Number.isFinite(firstKickoff)?firstKickoff:Infinity;
 }
 export function gameLocked(league,week,game,games,now=Date.now()) {
  return !game || game.status!=='scheduled' || !Number.isFinite(Date.parse(game.kickoff)) || now>=Math.min(Date.parse(game.kickoff),weekDeadline(league,week,games));
