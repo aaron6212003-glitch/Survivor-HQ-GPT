@@ -49,7 +49,8 @@ function tiebreakerStats(league,entry,schedules,activeWeek) {
 export function weekDeadline(league,week,games) {
  const valid=liveGames(games).map(g=>Date.parse(g.kickoff)).filter(Number.isFinite);
  const custom=league.deadlines?.[week] ? Date.parse(league.deadlines[week]) : Infinity;
- return Math.min(custom,league.config.deadlineMode==='first-game'&&valid.length?Math.min(...valid):Infinity);
+ // Every game locks at its own kickoff; ignore legacy whole-week deadlines.
+ return Infinity;
 }
 export function gameLocked(league,week,game,games,now=Date.now()) {
  return !game || game.status!=='scheduled' || !Number.isFinite(Date.parse(game.kickoff)) || now>=Math.min(Date.parse(game.kickoff),weekDeadline(league,week,games));
