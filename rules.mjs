@@ -13,6 +13,11 @@ export function settings(input) {
  const maxEntries=input.format==='survivor'?integer(input.maxEntries,1,100,'Maximum lives per member'):1;
  return {format:input.format,maxEntries,deadlineMode:'per-game',tiebreaker:input.format==='pickem'?'monday-total':'shared',tiesLose:input.format==='survivor' ? input.tiesLose!==false : true};
 }
+export function normalizeLeagueConfig(league) {
+ // Older leagues used a whole-week lock after Thursday. Every current league locks each game at its own kickoff.
+ if(league?.config&&league.config.deadlineMode!=='per-game') league.config.deadlineMode='per-game';
+ return league;
+}
 export function createLeague(input,user,profile) {
  const alphabet='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
  const code=[...randomBytes(6)].map(b=>alphabet[b%alphabet.length]).join('');
